@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 对应的是接口的全名 -->
+<mapper namespace="com.bw.mapper.PlantMapperDao">
+
+	<select id="list" resultType="map" parameterType="map">
+		SELECT p.*,t.tname FROM `0830_plant` p 
+		LEFT JOIN 0830_type t on p.tid = t.tid
+		<where>
+			<if test="pname != null and pname != '' ">
+				and p.pname like concat('%',#{pname},'%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectType" resultType="type">
+		select * from 0830_type;
+	</select>
+	
+	<insert id="add">
+		insert into 0830_plant (pname,content,tid) values (#{pname},#{content},#{tid})
+	</insert>
+
+	<delete id="delete">
+		delete from 0830_plant where pid=#{pid}
+	</delete>
+	
+	<delete id="deleteAll">
+		delete from 0830_plant where pid in 
+		<foreach collection="array"  item="em" open="(" separator="," close=")">
+		#{em}
+		</foreach>
+	</delete>
+	
+	<select id="toupdate" resultType="plant">
+			select * from 0830_plant where pid=#{pid}; 
+	</select>
+	
+	<update id="update">
+		update 0830_plant set pname=#{pname},content=#{content},tid=#{tid} where pid=#{pid}
+	</update>
+</mapper>
